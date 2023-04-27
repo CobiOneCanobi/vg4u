@@ -10,10 +10,18 @@ class IgdbApi
     @headers = {'Client-ID' => ENV['TWITCH_CLIENT_ID'], 'Authorization' => "Bearer #{access_token}"}
   end
 
+  # Sample output:
+  # [{"id"=>76870, "name"=>"War Theatre"}]
+  # name: name of the game
   def games(body = 'fields *;')
     self.class.post('/games', headers: @headers, body: body)
   end
 
+  # Sample output:
+  # [{"id"=>170111, "date"=>1552953600, "game"=>76870, "platform"=>48}]
+  # date: Unix timestamp in ms of the date of the release
+  # game: Reference id of Game
+  # platform: Reference id of Platform
   def release_dates(body = 'fields game, date, platform;')
     response = self.class.post('/release_dates', headers: @headers, body: body)
   end
