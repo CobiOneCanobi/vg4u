@@ -16,8 +16,18 @@ class IgdbApi
 
   def release_dates(body = 'fields game, date, platform;')
     response = self.class.post('/release_dates', headers: @headers, body: body)
-    game_ids = response.map {|game| game['game'] }.join(',')
-    game_names = games("fields name; where id = (#{game_ids});")
-    # TODO move logic that is not related to grabbing release dates outside of method
+  end
+
+  # TODO move into video game object
+  def merging_video_game_data
+    game_release_dates = release_dates
+    game_ids = game_release_dates.map {|release_date| release_date['game'] }.join(',')
+    games = games("fields name; where id = (#{game_ids});")
+
+    game_release_dates.each do |release_date|
+      game = games.find {|game| game['id'] == release_date['game']}
+      release_date.merge!('name' => game['name'])
+    end
+    game_release_dates
   end
 end
