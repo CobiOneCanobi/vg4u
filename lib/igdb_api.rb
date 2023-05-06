@@ -33,4 +33,11 @@ class IgdbApi
   def covers(body = 'fields *;')
     self.class.post('/covers', headers: @headers, body: body)
   end
+
+  # Sample output:
+  # [{"id"=>48, "name"=>"Playstation 4"}]
+  # name: name of platform
+  def platforms(body = 'fields *;')
+    self.class.post('/platforms', headers: @headers, body: body)
+  end
 end
