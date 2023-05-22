@@ -1,3 +1,5 @@
+require 'igdb_api'
+
 class RetrieveGamesService
   def initialize
     @igdb_api = IgdbApi.new

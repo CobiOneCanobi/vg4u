@@ -1,2 +1,12 @@
-<h1>Games#index</h1>
-<p>Find me in app/views/games/index.html.erb</p>
+<h1>Games Coming Soon</h1>
+<div>
+  <% @games.each do |game| %>
+  <div>
+    <%= image_tag(game.cover_url) %>
+    <div><%= game.name %></div>
+    <div><%= game.release_date %></div>
+    <div><%= game.platform %></div>
+    </div>
+    <br/>
+  <% end %>
+</div>
