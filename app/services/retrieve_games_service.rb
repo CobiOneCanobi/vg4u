@@ -1,8 +1,8 @@
 require 'igdb_api'
 
 class RetrieveGamesService
-  def initialize
-    @igdb_api = IgdbApi.new
+  def initialize(igdb_api = IgdbApi.new)
+    @igdb_api = igdb_api
   end
 
   def retrieve_games(platform = 6)
