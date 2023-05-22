@@ -5,9 +5,10 @@ class RetrieveGamesService
     @igdb_api = IgdbApi.new
   end
 
-  def retrieve_games
+  def retrieve_games(platform = 6)
     games = []
-    game_release_dates = @igdb_api.release_dates
+    current_time_ms = (Time.now.to_f).to_i
+    game_release_dates = @igdb_api.release_dates("fields *; where game.platforms = #{platform} & date > #{current_time_ms}; sort date asc;")
     game_ids = game_release_dates.map { |game_release_date| game_release_date['game'] }.join(',')
     game_names = @igdb_api.games("fields name; where id = (#{game_ids});")
     game_covers = @igdb_api.covers("fields game, url; where game = (#{game_ids});")
