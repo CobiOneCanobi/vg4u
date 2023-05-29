@@ -7,21 +7,17 @@ class RetrieveGamesService
 
   def retrieve_games(platform = 6)
     games = []
-    current_time_ms = (Time.now.to_f).to_i
-    game_release_dates = @igdb_api.release_dates("fields *; where game.platforms = #{platform} & date > #{current_time_ms}; sort date asc;")
-    game_ids = game_release_dates.map { |game_release_date| game_release_date['game'] }.join(',')
-    game_names = @igdb_api.games("fields name; where id = (#{game_ids});")
-    game_covers = @igdb_api.covers("fields game, url; where game = (#{game_ids});")
+    current_time_ms = Time.now.to_f.to_i
+    game_release_dates = @igdb_api.release_dates("fields date, game.name, game.cover.url, platform.name;
+      where platform = #{platform} & date > #{current_time_ms};
+      sort date asc;")
 
     game_release_dates.each do |game_release_date|
-      game_name = game_names.find { |g| g['id'] == game_release_date['game'] }
-      game_cover = game_covers.find { |c| c['game'] == game_release_date['game'] }
-      game_platform = @igdb_api.platforms("fields name; where id = #{game_release_date['platform']};").first
-      game = Game.new(game_release_date['game'],
-                      name: game_name['name'],
-                      cover: game_cover,
+      game = Game.new(game_release_date['game']['id'],
+                      name: game_release_date['game']['name'],
+                      cover: game_release_date['game']['cover'],
                       release_date: game_release_date['date'],
-                      platform: game_platform['name'])
+                      platform: game_release_date['platform']['name'])
       games << game
     end
     games
